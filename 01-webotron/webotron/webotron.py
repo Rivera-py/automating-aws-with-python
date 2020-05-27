@@ -21,14 +21,14 @@ from bucket import BucketManager
 session = None
 bucket_manager = None
 
+
 @click.group()
 @click.option('--profile',
               default=None,
-              help="Use a given AWS Profile."
-              )
+              help="Use a given AWS Profile.")
 def cli(profile):
-    global session, bucket_manager
     """Webotron deploys websites to AWS."""
+    global session, bucket_manager
     session_cfg = {}
     if profile:
         session_cfg['profile_name'] = profile
@@ -37,7 +37,6 @@ def cli(profile):
 
     session = boto3.Session(**session_cfg)
     bucket_manager = BucketManager(session)
-    s3 = bucket_manager.s3
 
 
 @cli.command('list-buckets')
@@ -70,6 +69,8 @@ def setup_bucket(bucket):
 def sync(pathname, bucket):
     """Sync contents of PATHNAME to BUCKET."""
     bucket_manager.sync(pathname, bucket)
+    print("Visit your website at: " +
+          bucket_manager.get_bucket_url(bucket_manager.s3.Bucket(bucket)))
 
 
 # Command to run if main file
