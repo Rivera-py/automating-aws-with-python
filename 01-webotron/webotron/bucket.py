@@ -1,5 +1,6 @@
-"""Manage an S3 bucket with this class."""
 # -*- coding: utf-8 -*-
+
+"""Manage an S3 bucket with this class."""
 
 import mimetypes
 from pathlib import Path
@@ -18,7 +19,7 @@ class BucketManager:
     CHUNK_SIZE = 8388608
 
     def __init__(self, session):
-        """Grabs the S3 resource for managing."""
+        """Grab the S3 resource for managing."""
         self.s3 = session.resource('s3')
         self.region = session.region_name
         self.transfer_config = boto3.s3.transfer.TransferConfig(
@@ -72,6 +73,10 @@ class BucketManager:
 
         return bucket_location["LocationConstraint"] or "us-east-1"
 
+    def get_bucket(self, bucket_name):
+        """Get a bucket object by name."""
+        return self.s3.Bucket(bucket_name)
+
     def get_bucket_url(self, bucket):
         """Get the website URL for this bucket."""
         return "http://{}.{}".format(
@@ -84,7 +89,7 @@ class BucketManager:
 
     def all_objects(self, bucket_name):
         """Get an iterator for all objects in a bucket."""
-        return self.s3.Bucket(bucket_name).objects.all()
+        return self.get_bucket(bucket_name).objects.all()
 
     def init_bucket(self, bucket_name):
         """Either create a new or grab an existing bucket."""
@@ -99,7 +104,7 @@ class BucketManager:
                 )
         except ClientError as error:
             if error.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
-                s3_bucket = self.s3.Bucket(bucket_name)
+                s3_bucket = self.get_bucket(bucket_name)
             else:
                 raise error
 
@@ -156,7 +161,7 @@ class BucketManager:
         """Sync a directory to an S3 bucket for uploading website content."""
         root = Path(pathname).expanduser().resolve()
 
-        s3_bucket = self.s3.Bucket(bucket_name)
+        s3_bucket = self.get_bucket(bucket_name)
         self.load_manifest(s3_bucket)
 
         def handle_directory(target):
