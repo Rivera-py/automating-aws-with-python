@@ -10,7 +10,7 @@ from functools import reduce
 import boto3
 from botocore.exceptions import ClientError
 
-import util
+import webotron.util
 
 
 class BucketManager:
