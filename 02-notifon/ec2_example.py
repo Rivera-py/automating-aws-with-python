@@ -1,5 +1,6 @@
 # coding: utf-8
 import boto3
+from time import sleep
 
 session = boto3.Session(profile_name='pythonAutomation')
 ec2 = session.resource('ec2')
