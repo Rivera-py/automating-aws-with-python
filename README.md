@@ -27,3 +27,7 @@ Notifon is a project to notify Slack users of changes to your AWS account using 
 Notifon currently has the following features:
 
 - Post CloudWatch Auto Scaling events to a Slack webhook
+
+## 03-videolyzer
+
+Videolyzer monitors an S3 bucket for .mp4 uploads and then runs a rekognition job on the videos obtaining labels and saving them in DynamoDB
